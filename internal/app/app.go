@@ -2,9 +2,11 @@ package app
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"github.com/indigowar/blog-site/internal/config"
 	"github.com/indigowar/blog-site/internal/server"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -17,7 +19,15 @@ func Run() {
 		log.Panic(err)
 	}
 
-	s := server.New(cfg, nil)
+	r := gin.Default()
+
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "hello, world",
+		})
+	})
+
+	s := server.New(cfg, r)
 
 	go func() {
 		if err := s.Run(); err != nil {
